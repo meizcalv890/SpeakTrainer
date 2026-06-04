@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeakTrainer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>🎤 SpeakTrainer</h1>
+    <p>Latihan Public Speaking Interaktif</p>
+
+    <button id="themeBtn">
+        🌙 Dark Mode
+    </button>
+</header>
+
+<div class="container">
+
+    <!-- Dashboard -->
+
+    <section class="card">
+
+        <h2>Dashboard</h2>
+
+        <div class="dashboard">
+
+            <div class="stat">
+                <h3 id="totalPractice">0</h3>
+                <p>Total Latihan</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="bestScore">0</h3>
+                <p>Skor Tertinggi</p>
+            </div>
+
+            <div class="stat">
+                <h3 id="avgScore">0</h3>
+                <p>Rata-rata</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Pilihan Level -->
+
+    <section class="card">
+
+        <h2>Pilih Tingkat Kesulitan</h2>
+
+        <select id="levelSelect">
+
+            <option value="easy">
+                Pemula
+            </option>
+
+            <option value="medium">
+                Menengah
+            </option>
+
+            <option value="hard">
+                Mahir
+            </option>
+
+        </select>
+
+    </section>
+
+    <!-- Teks -->
+
+    <section class="card">
+
+        <h2>Teks Latihan</h2>
+
+        <div id="targetText"></div>
+
+    </section>
+
+    <!-- Kontrol -->
+
+    <section class="card controls">
+
+        <button id="startBtn">
+            🎙 Mulai
+        </button>
+
+        <button id="stopBtn" disabled>
+            ⏹ Stop
+        </button>
+
+    </section>
+
+    <!-- Statistik Live -->
+
+    <section class="card">
+
+        <h2>Statistik Live</h2>
+
+        <div class="liveStats">
+
+            <p>
+                Durasi :
+                <span id="duration">
+                    0
+                </span>
+                detik
+            </p>
+
+            <p>
+                Kata :
+                <span id="wordCount">
+                    0
+                </span>
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Transkrip -->
+
+    <section class="card">
+
+        <h2>Transkrip Suara</h2>
+
+        <div id="transcript">
+
+            Mulai latihan untuk melihat hasil.
+
+        </div>
+
+    </section>
+
+    <!-- Kesalahan -->
+
+    <section class="card">
+
+        <h2>Perbandingan Teks</h2>
+
+        <div id="comparison">
+
+            Belum ada data.
+
+        </div>
+
+    </section>
+
+    <!-- Hasil -->
+
+    <section class="card">
+
+        <h2>Hasil Analisis</h2>
+
+        <div id="result">
+
+            Menunggu latihan selesai.
+
+        </div>
+
+    </section>
+
+    <!-- Sertifikat -->
+
+    <section class="card">
+
+        <h2>Pencapaian</h2>
+
+        <div id="achievement">
+
+            Belum ada.
+
+        </div>
+
+    </section>
+
+    <!-- Grafik -->
+
+    <section class="card">
+
+        <h2>Grafik Perkembangan</h2>
+
+        <canvas id="scoreChart"></canvas>
+
+    </section>
+
+    <!-- Riwayat -->
+
+    <section class="card">
+
+        <h2>Riwayat Latihan</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Skor</th>
+                    <th>Akurasi</th>
+                    <th>WPM</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="historyTable">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
