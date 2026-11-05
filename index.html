@@ -1,0 +1,885 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8f8f5">
+
+    <meta name="description"
+        content="SpeakTrainer - Personal public speaking practice studio.">
+
+    <title>SpeakTrainer — Speaking Practice Studio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- DOCX Import -->
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.9.0/mammoth.browser.min.js"></script>
+
+    <!-- PDF Import -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- DOCX Export -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+
+    <!-- PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <a href="#" class="brand" data-view="dashboard">
+            <span class="brand-mark">S.</span>
+
+            <span class="brand-name">
+                SpeakTrainer
+                <small>PERSONAL SPEAKING STUDIO</small>
+            </span>
+        </a>
+
+
+        <div class="sidebar-section">
+
+            <span class="eyebrow">WORKSPACE</span>
+
+            <button class="nav-item active" data-view="dashboard">
+                <span class="nav-icon">◫</span>
+                Dashboard
+            </button>
+
+            <button class="nav-item" data-view="practice">
+                <span class="nav-icon">◉</span>
+                Practice Studio
+            </button>
+
+            <button class="nav-item" data-view="materials">
+                <span class="nav-icon">▤</span>
+                My Materials
+                <span class="nav-count" id="materialNavCount">0</span>
+            </button>
+
+            <button class="nav-item" data-view="history">
+                <span class="nav-icon">◷</span>
+                Practice History
+            </button>
+
+        </div>
+
+
+        <div class="sidebar-section">
+
+            <span class="eyebrow">PREFERENCES</span>
+
+            <button class="nav-item" data-view="settings">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </button>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-note">
+                <span class="note-icon">✳</span>
+
+                <strong>Keep practicing.</strong>
+
+                <p>Confidence comes from preparation and consistency.</p>
+            </div>
+
+            <div class="sidebar-footer">
+                SPEAKTRAINER <span>VERSION 1.1</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="mobile-menu" id="menuBtn"
+                    aria-label="Open navigation">☰</button>
+
+                <div>
+                    <span class="eyebrow">YOUR WORKSPACE</span>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="system-status">
+                    <span class="status-dot"></span>
+                    LOCAL DATA
+                </div>
+
+                <div class="avatar">ST</div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================= -->
+        <!-- DASHBOARD -->
+        <!-- ================================= -->
+
+        <section class="view-panel active" data-view-panel="dashboard">
+
+            <div class="welcome-row">
+
+                <div>
+                    <span class="eyebrow">YOUR PROGRESS</span>
+
+                    <h2>Become a better speaker.</h2>
+
+                    <p>Small improvements make a confident speaker.</p>
+                </div>
+
+                <button class="primary-btn" data-go="practice">
+                    <span>＋</span> Start practicing
+                </button>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+                    <span class="stat-label">TOTAL PRACTICE</span>
+                    <strong id="totalPractice">0</strong>
+                    <span class="stat-description">Sessions completed</span>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">BEST SCORE</span>
+                    <strong id="bestScore">0</strong>
+                    <span class="stat-description">Personal record</span>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">AVERAGE SCORE</span>
+                    <strong id="avgScore">0</strong>
+                    <span class="stat-description">Across all sessions</span>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">TOTAL TIME</span>
+                    <strong id="totalDuration">0</strong>
+                    <span class="stat-description">Minutes of practice</span>
+                </article>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+                <article class="panel chart-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="eyebrow">PERFORMANCE</span>
+                            <h3>Progress overview</h3>
+                        </div>
+
+                        <span class="panel-tag">ALL TIME</span>
+
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+
+                    <p class="empty-state" id="chartEmpty">
+                        Complete a practice session to see your progress.
+                    </p>
+
+                </article>
+
+
+                <article class="panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">MILESTONES</span>
+                            <h3>Achievements</h3>
+                        </div>
+                    </div>
+
+                    <div id="achievementList" class="achievement-list"></div>
+
+                </article>
+
+            </div>
+
+
+            <article class="panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="eyebrow">RECENT ACTIVITY</span>
+                        <h3>Latest sessions</h3>
+                    </div>
+
+                    <button class="text-btn" data-go="history">
+                        View all →
+                    </button>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>SESSION</th>
+                                <th>DATE</th>
+                                <th>SCORE</th>
+                                <th>ACCURACY</th>
+                                <th>WPM</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recentTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="empty-state" id="recentEmpty">
+                    No practice sessions yet.
+                </p>
+
+            </article>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- PRACTICE -->
+        <!-- ================================= -->
+
+        <section class="view-panel" data-view-panel="practice">
+
+            <div class="page-intro">
+                <span class="eyebrow">SPEAKING WORKSPACE</span>
+                <h2>Practice Studio</h2>
+                <p>Read your material aloud and evaluate your delivery.</p>
+            </div>
+
+
+            <div class="practice-layout">
+
+                <div class="practice-main">
+
+                    <article class="panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">01 / MATERIAL</span>
+                                <h3>Your speaking prompt</h3>
+                            </div>
+
+                            <button class="text-btn" data-go="materials">
+                                Manage materials →
+                            </button>
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+
+                                <label for="levelSelect">Difficulty</label>
+
+                                <select id="levelSelect">
+                                    <option value="easy">Beginner</option>
+                                    <option value="medium">Intermediate</option>
+                                    <option value="hard">Advanced</option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="textSelect">Practice material</label>
+
+                                <select id="textSelect"></select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="target-box">
+
+                            <div class="target-meta">
+                                <span class="eyebrow">READING MATERIAL</span>
+                                <span id="promptWordCount">0 WORDS</span>
+                            </div>
+
+                            <div id="targetText" class="target-text">
+                                Select a practice material.
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="panel recording-panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">02 / RECORDING</span>
+                                <h3>Voice practice</h3>
+                            </div>
+
+                            <span class="recording-label" id="recordingLabel">
+                                STANDBY
+                            </span>
+                        </div>
+
+
+                        <div class="microphone-area">
+
+                            <div class="mic-circle" id="micCircle">
+                                <span>🎙</span>
+                            </div>
+
+                            <h3 id="micMessage">
+                                Your microphone is ready.
+                            </h3>
+
+                            <p>Speak clearly and at a natural pace.</p>
+
+                        </div>
+
+
+                        <div class="recording-actions">
+
+                            <button class="primary-btn record-btn"
+                                id="startBtn">
+                                ● Start recording
+                            </button>
+
+                            <button class="secondary-btn"
+                                id="stopBtn" disabled>
+                                ■ Finish session
+                            </button>
+
+                        </div>
+
+
+                        <div class="live-stats">
+
+                            <div>
+                                <span class="eyebrow">DURATION</span>
+                                <strong id="duration">00:00</strong>
+                            </div>
+
+                            <div>
+                                <span class="eyebrow">WORDS SPOKEN</span>
+                                <strong id="wordCount">0</strong>
+                            </div>
+
+                            <div>
+                                <span class="eyebrow">STATUS</span>
+                                <strong id="speechStatus">Ready</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="session-status" id="sessionStatus">
+                            <span class="status-dot"></span>
+                            Ready to practice
+                        </div>
+
+                    </article>
+
+
+                    <article class="panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">03 / TRANSCRIPTION</span>
+                                <h3>Your transcript</h3>
+                            </div>
+                        </div>
+
+                        <div id="transcript" class="transcript-box">
+                            Your speech transcript will appear here.
+                        </div>
+
+                    </article>
+
+
+                    <article class="panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">04 / COMPARISON</span>
+                                <h3>Text comparison</h3>
+                            </div>
+                        </div>
+
+                        <div class="comparison-legend">
+                            <span class="legend-correct">● Correct</span>
+                            <span class="legend-wrong">● Incorrect</span>
+                            <span class="legend-missed">● Missed</span>
+                            <span class="legend-extra">● Extra</span>
+                        </div>
+
+                        <div id="comparison" class="comparison-box">
+                            Complete a session to compare your speech.
+                        </div>
+
+                    </article>
+
+
+                    <article class="panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">05 / REPORT</span>
+                                <h3>Practice analysis</h3>
+                            </div>
+                        </div>
+
+                        <div id="result" class="result-container">
+                            Complete a practice session to generate your report.
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <aside class="practice-side">
+
+                    <article class="panel">
+
+                        <span class="eyebrow">PRACTICE SETTINGS</span>
+                        <h3>Configuration</h3>
+
+                        <div class="form-group">
+                            <label for="languageSelect">
+                                Recognition language
+                            </label>
+
+                            <select id="languageSelect">
+                                <option value="id-ID">Indonesian</option>
+                                <option value="en-US">English (US)</option>
+                                <option value="en-GB">English (UK)</option>
+                            </select>
+                        </div>
+
+                        <p class="help-text">
+                            Speech recognition availability depends on your browser.
+                        </p>
+
+                    </article>
+
+
+                    <article class="panel">
+
+                        <span class="eyebrow">QUICK GUIDE</span>
+                        <h3>Before you speak</h3>
+
+                        <ol class="guide-list">
+                            <li>Choose your reading material.</li>
+                            <li>Allow microphone access.</li>
+                            <li>Speak at a natural pace.</li>
+                            <li>Finish the session to see your report.</li>
+                        </ol>
+
+                    </article>
+
+
+                    <article class="panel achievement-highlight">
+
+                        <span class="eyebrow">REMEMBER</span>
+
+                        <h3>Progress over perfection.</h3>
+
+                        <p>
+                            Every practice session is an opportunity
+                            to improve your communication skills.
+                        </p>
+
+                    </article>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- MATERIAL LIBRARY -->
+        <!-- ================================= -->
+
+        <section class="view-panel" data-view-panel="materials">
+
+            <div class="welcome-row">
+
+                <div>
+                    <span class="eyebrow">YOUR DOCUMENTS</span>
+                    <h2>My Materials</h2>
+                    <p>Create, import, organize, and export your speaking materials.</p>
+                </div>
+
+                <button class="primary-btn" id="newMaterialBtn">
+                    ＋ New material
+                </button>
+
+            </div>
+
+
+            <article class="panel import-panel">
+
+                <div class="import-content">
+                    <div class="import-icon">↥</div>
+
+                    <div>
+                        <h3>Import an existing document</h3>
+                        <p>Upload TXT, DOCX, or text-based PDF files.</p>
+                    </div>
+                </div>
+
+                <label class="secondary-btn import-btn" for="materialFile">
+                    Browse files
+                </label>
+
+                <input type="file" id="materialFile"
+                    accept=".txt,.docx,.pdf" hidden>
+
+            </article>
+
+
+            <!-- MATERIAL EDITOR -->
+
+            <article class="panel editor-panel" id="materialEditor"
+                hidden>
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="eyebrow">MATERIAL EDITOR</span>
+                        <h3 id="editorHeading">Create new material</h3>
+                    </div>
+
+                    <button class="icon-btn" id="closeEditorBtn"
+                        aria-label="Close editor">✕</button>
+
+                </div>
+
+
+                <input type="hidden" id="materialId">
+
+
+                <div class="form-group">
+                    <label for="materialTitle">Material title</label>
+
+                    <input type="text" id="materialTitle"
+                        maxlength="100"
+                        placeholder="Example: The Importance of Education">
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="materialLevel">Difficulty level</label>
+
+                        <select id="materialLevel">
+                            <option value="easy">Beginner</option>
+                            <option value="medium">Intermediate</option>
+                            <option value="hard">Advanced</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Estimated reading time</label>
+
+                        <div class="readonly-field" id="readingEstimate">
+                            0 minutes
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <div class="editor-label-row">
+                        <label for="materialContent">Your text</label>
+
+                        <span id="editorWordCount">0 WORDS</span>
+                    </div>
+
+                    <textarea id="materialContent"
+                        rows="14"
+                        placeholder="Write or paste your speaking material here..."></textarea>
+
+                </div>
+
+
+                <div class="editor-footer">
+
+                    <span class="help-text">
+                        Your material is saved in this browser.
+                    </span>
+
+                    <div class="button-group">
+
+                        <button class="secondary-btn"
+                            id="cancelMaterialBtn">
+                            Cancel
+                        </button>
+
+                        <button class="primary-btn"
+                            id="saveMaterialBtn">
+                            Save material
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- MATERIAL LIST -->
+
+            <div class="material-library-heading">
+
+                <div>
+                    <span class="eyebrow">YOUR COLLECTION</span>
+                    <h3>Saved materials</h3>
+                </div>
+
+                <span class="panel-tag" id="materialCount">
+                    0 MATERIALS
+                </span>
+
+            </div>
+
+
+            <div id="materialList" class="material-grid"></div>
+
+
+            <div id="materialEmpty" class="panel empty-library">
+                <div class="empty-icon">▤</div>
+                <h3>No materials yet.</h3>
+                <p>Create your first speaking material or import an existing document.</p>
+
+                <button class="primary-btn" data-action="new-material">
+                    Create material
+                </button>
+            </div>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- HISTORY -->
+        <!-- ================================= -->
+
+        <section class="view-panel" data-view-panel="history">
+
+            <div class="welcome-row">
+
+                <div>
+                    <span class="eyebrow">YOUR PERFORMANCE</span>
+                    <h2>Practice History</h2>
+                    <p>Review your previous speaking practice sessions.</p>
+                </div>
+
+                <button class="danger-btn" id="clearHistoryBtn">
+                    Clear history
+                </button>
+
+            </div>
+
+
+            <article class="panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <h3>All sessions</h3>
+                    </div>
+
+                    <span class="panel-tag" id="historyCount">
+                        0 SESSIONS
+                    </span>
+
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>SESSION</th>
+                                <th>DATE</th>
+                                <th>LEVEL</th>
+                                <th>SCORE</th>
+                                <th>ACCURACY</th>
+                                <th>FILLERS</th>
+                                <th>WPM</th>
+                                <th>DURATION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyTable"></tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="empty-state" id="historyEmpty">
+                    No practice history available.
+                </p>
+
+            </article>
+
+        </section>
+
+
+        <!-- ================================= -->
+        <!-- SETTINGS -->
+        <!-- ================================= -->
+
+        <section class="view-panel" data-view-panel="settings">
+
+            <div class="page-intro">
+                <span class="eyebrow">PREFERENCES</span>
+                <h2>Settings</h2>
+                <p>Manage your local application preferences.</p>
+            </div>
+
+
+            <article class="panel settings-card">
+
+                <h3>Speech recognition</h3>
+
+                <div class="form-group">
+                    <label for="settingsLanguage">
+                        Default language
+                    </label>
+
+                    <select id="settingsLanguage">
+                        <option value="id-ID">Indonesian</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="en-GB">English (UK)</option>
+                    </select>
+                </div>
+
+            </article>
+
+
+            <article class="panel settings-card">
+
+                <h3>Appearance</h3>
+
+                <div class="setting-row">
+
+                    <div>
+                        <strong>Dark mode</strong>
+                        <p>Switch the application appearance.</p>
+                    </div>
+
+                    <button class="secondary-btn" id="themeBtn">
+                        Enable dark mode
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <article class="panel settings-card">
+
+                <h3>Local data</h3>
+
+                <p class="help-text">
+                    Your materials, preferences, and practice history
+                    are stored in this browser.
+                </p>
+
+                <div class="setting-row">
+                    <div>
+                        <strong>Delete practice history</strong>
+                        <p>Remove all recorded practice sessions.</p>
+                    </div>
+
+                    <button class="danger-btn" id="settingsClearBtn">
+                        Clear history
+                    </button>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <footer class="main-footer">
+            <span>SpeakTrainer © 2026</span>
+            <span>BUILT FOR BETTER COMMUNICATION.</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- MOBILE OVERLAY -->
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
