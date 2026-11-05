@@ -90,7 +90,7 @@ speaktrainer/
 1. Clone this repository:
 
    ```bash
-   git clone YOUR_REPOSITORY_URL
+   git clone https://github.com/meizcalv890/SpeakTrainer
    ```
 
 2. Open the project folder in Visual Studio Code.
