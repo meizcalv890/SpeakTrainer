@@ -245,7 +245,7 @@ export async function importMaterialFile(file) {
 
     window.pdfjsLib.GlobalWorkerOptions.workerSrc =
       "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    
+
     const pdf = await window.pdfjsLib.getDocument({
       data: arrayBuffer,
     }).promise;
@@ -550,6 +550,14 @@ export function renderMaterials() {
     .forEach((material) => {
       const words = countWords(material.content);
 
+      if (window.lucide?.createIcons) {
+        window.lucide.createIcons({
+          attrs: {
+            "stroke-width": 1.8,
+          },
+        });
+      }
+
       const card = document.createElement("article");
 
       card.className = "material-card";
@@ -558,7 +566,9 @@ export function renderMaterials() {
 
                 <div class="material-card-top">
 
-                    <div class="material-file-icon">▤</div>
+                      <div class="material-file-icon">
+                          <i data-lucide="file-text"></i>
+                      </div>
 
                     <span class="panel-tag">
                         ${escapeHTML(material.level.toUpperCase())}

@@ -1,3 +1,4 @@
+
 import { getHistory } from "./storage.js";
 
 let scoreChart = null;
@@ -12,10 +13,20 @@ function formatDate(date) {
 
 function formatDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
-
   const remaining = seconds % 60;
 
   return `${minutes}:${String(remaining).padStart(2, "0")}`;
+}
+
+function renderIcons(container = document) {
+  if (window.lucide?.createIcons) {
+    window.lucide.createIcons({
+      root: container,
+      attrs: {
+        "stroke-width": 1.8,
+      },
+    });
+  }
 }
 
 // ========================================
@@ -24,11 +35,8 @@ function formatDuration(seconds) {
 
 export function renderDashboard() {
   const history = getHistory();
-
   const total = history.length;
-
   const scores = history.map((item) => Number(item.score) || 0);
-
   const best = total ? Math.max(...scores) : 0;
 
   const average = total
@@ -51,9 +59,7 @@ export function renderDashboard() {
     `${Math.floor(totalDuration / 60)}<span class="small-unit">min</span>`;
 
   renderRecent(history);
-
   renderAchievements(history);
-
   renderChart(history);
 }
 
@@ -63,14 +69,12 @@ export function renderDashboard() {
 
 function renderRecent(history) {
   const tbody = document.getElementById("recentTable");
-
   const empty = document.getElementById("recentEmpty");
 
   tbody.innerHTML = "";
 
   if (history.length === 0) {
     empty.style.display = "block";
-
     return;
   }
 
@@ -84,13 +88,9 @@ function renderRecent(history) {
 
       const values = [
         `#${history.length - index}`,
-
         formatDate(item.date),
-
         item.score,
-
         `${item.accuracy}%`,
-
         item.wpm,
       ];
 
@@ -99,11 +99,8 @@ function renderRecent(history) {
 
         if (column === 2) {
           const badge = document.createElement("span");
-
           badge.className = "score-pill";
-
           badge.textContent = value;
-
           cell.appendChild(badge);
         } else {
           cell.textContent = value;
@@ -127,68 +124,66 @@ function renderAchievements(history) {
     {
       title: "First Steps",
       description: "Complete your first practice session.",
-      icon: "✳",
+      icon: "flag",
       unlocked: history.length >= 1,
     },
-
     {
       title: "Consistent Speaker",
       description: "Complete 5 practice sessions.",
-      icon: "◷",
+      icon: "calendar-check",
       unlocked: history.length >= 5,
     },
-
     {
       title: "Dedicated Speaker",
       description: "Complete 10 practice sessions.",
-      icon: "◎",
+      icon: "target",
       unlocked: history.length >= 10,
     },
-
     {
       title: "Excellent Speaker",
       description: "Achieve a score of 90 or higher.",
-      icon: "★",
-      unlocked: history.some((item) => item.score >= 90),
+      icon: "award",
+      unlocked: history.some((item) => Number(item.score) >= 90),
     },
-
     {
       title: "Perfect Accuracy",
       description: "Achieve 100% transcription accuracy.",
-      icon: "✓",
-      unlocked: history.some((item) => item.accuracy === 100),
+      icon: "check-circle",
+      unlocked: history.some((item) => Number(item.accuracy) === 100),
     },
   ];
 
-  container.innerHTML = "";
+  container.replaceChildren();
 
   achievements.forEach((item) => {
     const element = document.createElement("div");
 
-    element.className = "achievement-item" + (item.unlocked ? "" : " locked");
+    element.className =
+      "achievement-item" + (item.unlocked ? "" : " locked");
 
     const icon = document.createElement("div");
-
     icon.className = "achievement-icon";
 
-    icon.textContent = item.icon;
+    const iconElement = document.createElement("i");
+    iconElement.setAttribute("data-lucide", item.icon);
+    iconElement.setAttribute("aria-hidden", "true");
+
+    icon.appendChild(iconElement);
 
     const content = document.createElement("div");
 
     const title = document.createElement("strong");
-
     title.textContent = item.title;
 
     const description = document.createElement("p");
-
     description.textContent = item.description;
 
     content.append(title, description);
-
     element.append(icon, content);
-
     container.appendChild(element);
   });
+
+  renderIcons(container);
 }
 
 // ========================================
@@ -197,20 +192,18 @@ function renderAchievements(history) {
 
 export function renderChart(history = getHistory()) {
   const canvas = document.getElementById("scoreChart");
-
   const empty = document.getElementById("chartEmpty");
 
   if (!window.Chart) {
     empty.style.display = "block";
-
     empty.textContent =
       "Chart library unavailable. Check your internet connection.";
-
     return;
   }
 
   if (scoreChart) {
     scoreChart.destroy();
+    scoreChart = null;
   }
 
   if (history.length === 0) {
@@ -220,10 +213,9 @@ export function renderChart(history = getHistory()) {
   }
 
   const labels = history.map((_, index) => `#${index + 1}`);
-
   const scores = history.map((item) => Number(item.score) || 0);
 
-  scoreChart = new Chart(canvas, {
+  scoreChart = new window.Chart(canvas, {
     type: "line",
 
     data: {
@@ -232,23 +224,14 @@ export function renderChart(history = getHistory()) {
       datasets: [
         {
           label: "Practice Score",
-
           data: scores,
-
           borderColor: "#6d5ce7",
-
           backgroundColor: "rgba(109,92,231,0.08)",
-
           borderWidth: 2.5,
-
           pointRadius: 4,
-
           pointBackgroundColor: "#6d5ce7",
-
           pointBorderWidth: 0,
-
           fill: true,
-
           tension: 0.3,
         },
       ],
@@ -256,7 +239,6 @@ export function renderChart(history = getHistory()) {
 
     options: {
       responsive: true,
-
       maintainAspectRatio: false,
 
       plugins: {
@@ -266,9 +248,7 @@ export function renderChart(history = getHistory()) {
 
         tooltip: {
           backgroundColor: "#20201f",
-
           padding: 12,
-
           displayColors: false,
         },
       },
@@ -276,12 +256,10 @@ export function renderChart(history = getHistory()) {
       scales: {
         y: {
           min: 0,
-
           max: 100,
 
           ticks: {
             stepSize: 20,
-
             color: "#999990",
 
             font: {
@@ -318,20 +296,15 @@ export function renderChart(history = getHistory()) {
 
 export function renderHistory() {
   const history = getHistory();
-
   const tbody = document.getElementById("historyTable");
-
   const empty = document.getElementById("historyEmpty");
-
   const count = document.getElementById("historyCount");
 
   tbody.innerHTML = "";
-
   count.textContent = `${history.length} SESSIONS`;
 
   if (history.length === 0) {
     empty.style.display = "block";
-
     return;
   }
 
@@ -345,27 +318,18 @@ export function renderHistory() {
 
       const values = [
         `#${history.length - index}`,
-
         formatDate(item.date),
-
         item.level,
-
         item.score,
-
         `${item.accuracy}%`,
-
         item.fillerCount,
-
         item.wpm,
-
         formatDuration(item.duration),
       ];
 
       values.forEach((value) => {
         const cell = document.createElement("td");
-
-        cell.textContent = value;
-
+        cell.textContent = value ?? "—";
         row.appendChild(cell);
       });
 
